@@ -35,6 +35,7 @@ module WEBrick
         meta = req.meta_vars
         meta["SCRIPT_FILENAME"] = File.join(@config[:DocumentRoot], meta['SCRIPT_NAME']).gsub("/", "\\")
         meta["PATH"] = @config[:CGIPathEnv]
+        meta["REDIRECT_STATUS"] = "200" # php-cgi/apache specific value
         if /mswin|bccwin|mingw/ =~ RUBY_PLATFORM
           meta["SystemRoot"] = ENV["SystemRoot"]
         end

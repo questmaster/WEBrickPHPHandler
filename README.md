@@ -15,7 +15,6 @@ webserver can process php files and serve php websites.
 - The handler supports PHP 5 and needs a PHP 5 installation.
 - The WEBrick configuration :DocumentRoot has to be set
 - The new WEBrick configuration :PHPPath has to be set
-- php.ini setting cgi.force_redirect has to be 0
 
 It is assumed that all php files are accessible from the :DocumentRoot path.
 
