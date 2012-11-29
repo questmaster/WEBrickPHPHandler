@@ -12,6 +12,7 @@ webserver can process php files and serve php websites.
 
 ## Prerequisites ##
 
+- Ruby with WEBrick
 - The handler supports PHP 5 and needs a PHP 5 installation.
 - The WEBrick configuration :DocumentRoot has to be set
 - The new WEBrick configuration :PHPPath has to be set
