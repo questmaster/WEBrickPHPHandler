@@ -33,16 +33,18 @@ Additionally :DocumentRoot has to be set to be able to resolve the local path of
     port = 8080
     phppath = File.join(File.dirname(__FILE__), "php-5.4.9-Win32-VC9-x86").gsub("/", "\\")
 
-    # start server with config from vars
+    # create new server with config from vars
     server = HTTPServer.new(
         :Port => port,
         :DocumentRoot => dir,
         :PHPPath => phppath
     )
-    #  mount document root again to set new options (add PHPHandler for .php files)
+    
+    # mount document root again to set new options (add PHPHandler for .php files)
     server.mount("/", HTTPServlet::FileHandler, dir,
         {:FancyIndexing => true, :HandlerTable => {"php" => HTTPServlet::PHPHandler}})
 
+    # start server / prepare shutdown
     trap("INT") { server.shutdown }
     server.start
 
