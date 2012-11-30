@@ -34,7 +34,7 @@ module WEBrick
 
         meta = req.meta_vars
         meta["SCRIPT_FILENAME"] = File.join(@config[:DocumentRoot], meta['SCRIPT_NAME']).gsub("/", "\\")
-        meta["PATH"] = @config[:CGIPathEnv]
+        meta["PATH"] = @config[:PHPPath]
         meta["REDIRECT_STATUS"] = "200" # php-cgi/apache specific value
         if /mswin|bccwin|mingw/ =~ RUBY_PLATFORM
           meta["SystemRoot"] = ENV["SystemRoot"]
@@ -44,22 +44,27 @@ module WEBrick
         cgi_in = IO::popen(@phpcmd, "r+b")
         begin
           cgi_in.sync = true
+
+          if req.body and req.body.bytesize > 0
+            cgi_in.write(req.body)
+          end
+          cgi_in.close_write
         ensure
           data = cgi_in.read
-          cgi_in.close
+          cgi_in.close_read
           status = $?.exitstatus
           sleep 0.1 if /mswin|bccwin|mingw/ =~ RUBY_PLATFORM
         end
 
         @script_filename = meta['SCRIPT_NAME']
         if status != 0
-          @logger.error("CGIHandler: #{@script_filename} exit with #{status}")
+          @logger.error("PHPHandler: #{@script_filename} exit with #{status}")
         end
 
         data = "" unless data
         raw_header, body = data.split(/^[\xd\xa]+/, 2)
         raise HTTPStatus::InternalServerError,
-              "Premature end of script headers: #{@script_filename}" if body.nil?
+              "PHPHandler: Premature end of script headers: #{@script_filename}" if body.nil?
 
         begin
           header = HTTPUtils::parse_header(raw_header)
