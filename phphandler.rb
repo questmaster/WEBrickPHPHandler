@@ -21,11 +21,12 @@ module WEBrick
   module HTTPServlet
 
     class PHPHandler < AbstractServlet
-      PHPCGI = 'php-cgi.exe'
+      PHPCGI = 'php-cgi'
 
       def initialize(server, name)
         super(server, name)
         @phpcmd = File.join(@server[:PHPPath], PHPCGI).gsub("/", "\\")
+        @php_fullpath_script = name
       end
 
       def do_GET(req, res)
@@ -33,7 +34,7 @@ module WEBrick
         status = -1
 
         meta = req.meta_vars
-        meta["SCRIPT_FILENAME"] = File.join(@config[:DocumentRoot], meta['SCRIPT_NAME']).gsub("/", "\\")
+        meta["SCRIPT_FILENAME"] = @php_fullpath_script
         meta["PATH"] = @config[:PHPPath]
         meta["REDIRECT_STATUS"] = "200" # php-cgi/apache specific value
         if /mswin|bccwin|mingw/ =~ RUBY_PLATFORM
