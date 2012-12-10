@@ -25,7 +25,7 @@ module WEBrick
 
       def initialize(server, name)
         super(server, name)
-        @phpcmd = File.join(@server[:PHPPath], PHPCGI).gsub("/", "\\")
+        @phpcmd = File.join(@server[:PHPPath], PHPCGI)
         @php_fullpath_script = name
       end
 
